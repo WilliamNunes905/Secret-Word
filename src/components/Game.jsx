@@ -1,8 +1,10 @@
 import './Game.css';
 
-function Game() {
+function Game({ verifyLetter }) {
   return (
-    <div>Game</div>
+    <div>
+      <button onClick={verifyLetter}>Finalizar Jogo</button>
+    </div>
   )
 }
 
