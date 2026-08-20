@@ -1,26 +1,68 @@
+import { useState, useRef } from 'react';
 import './Game.css';
 
-function Game({ verifyLetter }) {
+function Game({
+  verifyLetter,
+  pickedCategory,
+  pickedWord,
+  letters,
+  guessedLetters,
+  wrongLetters,
+  guesses,
+  score 
+  }) {
+  const [letter, setLetter] = useState('');
+  const letterInputRed = useRef(null);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    verifyLetter(letter);
+    setLetter('');
+    letterInputRed.current.focus();
+  }
+
   return (
     <div className="game">
-      <p className="points">Pontuação: 000</p>
+      <p className="points">Pontuação: {score}</p>
       <h1>Adivinhe a palavra:</h1>
-      <h3 className="tip">Dica sobre a palavra: <span>Dica</span></h3>
+      <h3 className="tip">Dica sobre a palavra: <span>{pickedWord}</span></h3>
+      <p>Você ainda tem {guesses} tentativa(s).</p>
       <div className="wordContainer">
-        <span className="letter">A</span>
-        <span className="blankSquare"></span>
+        {
+          letters.map((letter, i) => 
+          guessedLetters.includes(letter) ? (
+            <span key={i}>
+              {letter}
+            </span>
+          ) : 
+          (
+            <span key={i} className='blankSquare'></span>
+           )
+          )
+        }
       </div>
       <div className="letterContainer">
         <p>Tente adivinhar uma letra da palavra:</p>
-        <form>
-          <input type='text' name='letter' maxLength='1' />
+        <form onSubmit={handleSubmit}>
+          <input
+            type='text'
+            name='letter'
+            maxLength='1'
+            onChange={(e) => setLetter(e.target.value)}
+            value={letter}
+            ref={letterInputRed}
+          />
           <button>Jogar!</button>
         </form>
       </div>
       <div className="wrongLettersContainer">
         <p>Letras já utilizadas:</p>
-        <span>a</span>
-        <span>b</span>
+         {
+          wrongLetters.map((letter, i) => (
+            <span key={i}>{letter}, </span>
+          ))
+         }
       </div>
     </div>
   )
