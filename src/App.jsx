@@ -13,6 +13,10 @@ function App() {
   const [pickedWord, setPickedWord] = useState("");
   const [pickedCategory, setPickedCategory] = useState("");
   const [letters, setLetters] = useState([]);
+  const [guessedLetters, setGuessedLetters] = useState([]);
+  const [wrongLetters, setWrongLetters] = useState([]);
+  const [guesses, setGuesses] = useState(3);
+  const [score, setScore] = useState(0);
   
   const stages = [
     {id: 1, name: "start"},
@@ -39,8 +43,8 @@ function App() {
     setGameStage(stages[1].name);
   }
 
-  function verifyLetter() {
-    setGameStage(stages[2].name);
+  function verifyLetter(letter) {
+    console.log(letter);
   }
 
   function retry() {
@@ -50,7 +54,16 @@ function App() {
   return (
     <div>
       { gameStage === "start" && <StartScreen startGame={startGame} /> }
-      { gameStage === "game" && <Game verifyLetter={verifyLetter} /> }
+      { gameStage === "game" && <Game
+       verifyLetter={verifyLetter}
+       pickedCategory={pickedCategory}
+       pickedWord={pickedWord}
+       letters={letters}
+       guessedLetters={guessedLetters}
+       wrongLetters={wrongLetters}
+       guesses={guesses}
+       score={score}
+      /> }
       { gameStage === "end" && <GameOver retry={retry} /> }
     </div>
   )
