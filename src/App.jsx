@@ -28,8 +28,13 @@ function App() {
   
   function pickWordAndCategory() {
     const categories = Object.keys(words);
-    const category = categories[Math.floor(Math.random() * Object.keys(categories).length)];
-    const word = words[category][Math.floor(Math.random() * words[category].length)];
+
+   const category =
+    categories[Math.floor(Math.random() * categories.length)];
+
+    const word =
+      words[category][Math.floor(Math.random() * words[category].length)];
+
     return { word, category };
   }
 
@@ -44,27 +49,49 @@ function App() {
     setGameStage(stages[1].name);
   }
 
-  function verifyLetter(letter) {
-    const normalizedLetter = letter.toLowerCase();
+function verifyLetter(letter) {
+  const normalizedLetter = letter.toLowerCase();
 
-    if (
-      guessedLetters.includes(normalizedLetter) ||
-      wrongLetters.includes(normalizedLetter)
-    ) { return; }
+  if (
+    guessedLetters.includes(normalizedLetter) ||
+    wrongLetters.includes(normalizedLetter)
+  ) {
+    return;
+  }
 
-    if (letters.includes(normalizedLetter)) {
-      setGuessedLetters((actualGuessedLetter) => [
-        ...actualGuessedLetter,
-        normalizedLetter,
-      ]);
-    } else {
-      setWrongLetters((actualWrongLetter) => [
-        ...actualWrongLetter,
-        normalizedLetter,
-      ]);
-      setGuesses((actualGuesses) => actualGuesses - 1);
+  if (letters.includes(normalizedLetter)) {
+    const updatedGuessedLetters = [
+      ...guessedLetters,
+      normalizedLetter,
+    ];
+
+    setGuessedLetters(updatedGuessedLetters);
+
+    const uniqueLetters = [...new Set(letters)];
+
+    if (updatedGuessedLetters.length === uniqueLetters.length) {
+      setScore((actualScore) => actualScore + 10);
+
+      clearLetterState();
+
+      startGame();
+    }
+  } else {
+    const updatedGuesses = guesses - 1;
+
+    setWrongLetters((actualWrongLetter) => [
+      ...actualWrongLetter,
+      normalizedLetter,
+    ]);
+
+    setGuesses(updatedGuesses);
+
+    if (updatedGuesses <= 0) {
+      clearLetterState();
+      setGameStage(stages[2].name);
     }
   }
+}
 
   function retry() {
     setScore(0);
@@ -77,14 +104,6 @@ function App() {
     setWrongLetters([]);
   }
 
-  if (guesses <= 0) {
-    clearLetterState();
-    setGameStage(stages[2].name);
-  } else {
-    setGuesses(guesses - 1);
-  }
-
-  
   return (
     <div>
       { gameStage === "start" && <StartScreen startGame={startGame} /> }
