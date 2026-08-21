@@ -4,7 +4,6 @@ import './Game.css';
 function Game({
   verifyLetter,
   pickedCategory,
-  pickedWord,
   letters,
   guessedLetters,
   wrongLetters,
@@ -26,7 +25,7 @@ function Game({
     <div className="game">
       <p className="points">Pontuação: {score}</p>
       <h1>Adivinhe a palavra:</h1>
-      <h3 className="tip">Dica sobre a palavra: <span>{pickedWord}</span></h3>
+      <h3 className="tip">Dica sobre a palavra: <span>{pickedCategory}</span></h3>
       <p>Você ainda tem {guesses} tentativa(s).</p>
       <div className="wordContainer">
         {

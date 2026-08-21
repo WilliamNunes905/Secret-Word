@@ -7,6 +7,13 @@ import StartScreen from './components/StartScreen';
 import Game from './components/Game';
 import GameOver from './components/GameOver';
 
+const stages = [
+  {id: 1, name: "start"},
+  {id: 2, name: "game"},
+  {id: 3, name: "end"}
+];
+
+const GUESSES_QTY = 3;
 
 function App() {
   const [words] = useState(wordsList);
@@ -15,14 +22,8 @@ function App() {
   const [letters, setLetters] = useState([]);
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
-  const [guesses, setGuesses] = useState(3);
+  const [guesses, setGuesses] = useState(GUESSES_QTY);
   const [score, setScore] = useState(0);
-  
-  const stages = [
-    {id: 1, name: "start"},
-    {id: 2, name: "game"},
-    {id: 3, name: "end"}
-  ];
   const [gameStage, setGameStage] = useState(stages[0].name);
   
   function pickWordAndCategory() {
@@ -44,12 +45,45 @@ function App() {
   }
 
   function verifyLetter(letter) {
-    console.log(letter);
+    const normalizedLetter = letter.toLowerCase();
+
+    if (
+      guessedLetters.includes(normalizedLetter) ||
+      wrongLetters.includes(normalizedLetter)
+    ) { return; }
+
+    if (letters.includes(normalizedLetter)) {
+      setGuessedLetters((actualGuessedLetter) => [
+        ...actualGuessedLetter,
+        normalizedLetter,
+      ]);
+    } else {
+      setWrongLetters((actualWrongLetter) => [
+        ...actualWrongLetter,
+        normalizedLetter,
+      ]);
+      setGuesses((actualGuesses) => actualGuesses - 1);
+    }
   }
 
   function retry() {
+    setScore(0);
+    setGuesses(GUESSES_QTY);
     setGameStage(stages[0].name);
   }
+
+  function clearLetterState() {
+    setGuessedLetters([]);
+    setWrongLetters([]);
+  }
+
+  if (guesses <= 0) {
+    clearLetterState();
+    setGameStage(stages[2].name);
+  } else {
+    setGuesses(guesses - 1);
+  }
+
   
   return (
     <div>
